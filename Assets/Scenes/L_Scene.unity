@@ -245,10 +245,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c85c1269ad89ad51b6d8fd6e3751b23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fishPrefab: {fileID: 1297996913584987221, guid: baf009ed60fafdf45ba628c7a05422c8, type: 3}
+  fishPrefab: {fileID: 3958411142049960785, guid: 74d26cf07e57cc74d8a906009742a5cb, type: 3}
   leaderPrefab: {fileID: 8487321736781432988, guid: bba5ca65b4368b34c8707bf331c697bc, type: 3}
-  numFish: 10
-  numLeader: 2
+  numFish: 2
+  numLeader: 1
   allFish: []
   allLeader: []
   swimLimits: {x: 5, y: 5, z: 5}
