@@ -55,6 +55,8 @@ public class PoliceAgent : Agent
         {
             Debug.LogError("MapCenter is not assigned!");
         }
+
+        rBody.centerOfMass = new Vector3(0, 0, 0);
     }
 
     public override void OnEpisodeBegin()
@@ -63,7 +65,6 @@ public class PoliceAgent : Agent
         this.rBody.angularVelocity = Vector3.zero;
         this.rBody.velocity = Vector3.zero;
         this.transform.localPosition = initialPosition;
-        this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         // Move the target to a random spawn point
         if (SpawnPoints.Length > 0)
@@ -98,35 +99,49 @@ public class PoliceAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        // Actions, size = 2
-        Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = actionBuffers.ContinuousActions[0];
-        controlSignal.z = actionBuffers.ContinuousActions[1];
-        rBody.AddForce(controlSignal * forceMultiplier);
+        // Acciones
+        float forwardSignal = actionBuffers.ContinuousActions[0]; // Avanzar o retroceder
+        float turnSignal = actionBuffers.ContinuousActions[1];    // Girar izquierda/derecha
+
+        // Movimiento hacia adelante o atrás (corregido para ignorar inclinación en X)
+        Vector3 forwardDirection = transform.forward;
+        Vector3 forwardMovement = forwardDirection * forwardSignal * forceMultiplier;
+        rBody.AddForce(forwardMovement, ForceMode.Force);
+
+        //// Restringir la velocidad lateral
+        //Vector3 localVelocity = transform.InverseTransformDirection(rBody.velocity);
+        //localVelocity.x = 0; // Eliminar movimiento lateral
+        //rBody.velocity = transform.TransformDirection(localVelocity);
+
+        // Giro
+        float turnSpeed = 100f; // Ajusta la velocidad de giro según sea necesario
+        rBody.angularVelocity = new Vector3(0, turnSignal * turnSpeed * Mathf.Deg2Rad, turnSignal * turnSpeed * Mathf.Deg2Rad);
 
         // Limitar la posición en Y para evitar movimientos no deseados
         Vector3 fixedPosition = transform.localPosition;
         fixedPosition.y = initialPosition.y; // Mantén la altura inicial
         transform.localPosition = fixedPosition;
 
-        // Obtener la dirección de movimiento
-        Vector3 movementDirection = new Vector3(controlSignal.x, 0, controlSignal.z);
 
-        // Si hay movimiento en el eje X o Z, rotar en el eje Z
-        if (movementDirection.magnitude > 0.1f)
+        // **Recompensas por alineación de la dirección de movimiento y rotación**
+        float forwardDotProduct = Vector3.Dot(forwardDirection, rBody.velocity.normalized); // Producto punto entre la dirección y la velocidad del agente
+
+        // Recompensar si el agente está avanzando en la misma dirección en la que está mirando
+        // Si el valor del producto punto es cercano a 1 (es decir, el agente se mueve en la misma dirección que está mirando)
+        float alignmentReward = Mathf.Clamp(forwardDotProduct, 0f, 1f); // Asegurarse de que esté entre 0 y 1
+        AddReward(alignmentReward * 0.0001f); // Puedes ajustar la multiplicación para controlar la magnitud de la recompensa
+
+        // **Recompensa por moverse hacia el objetivo**
+        Vector3 directionToTarget = (Target.localPosition - transform.localPosition).normalized; // Dirección hacia el objetivo
+        float moveTowardsTarget = Vector3.Dot(directionToTarget, rBody.velocity.normalized); // Producto punto entre la dirección al objetivo y la velocidad del agente
+
+        // Recompensar si el agente se mueve hacia el objetivo
+        if (moveTowardsTarget > 0)
         {
-            float angle = Mathf.Atan2(movementDirection.z, movementDirection.x) * Mathf.Rad2Deg; // Calcular el ángulo en grados
-            Quaternion targetRotation = Quaternion.Euler(0, 0, angle); // Aplicar solo rotación en el eje Z
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f); // Suavizar la rotación
+            AddReward(0.0001f); // Recompensa pequeña por moverse hacia el objetivo
         }
 
-        // Limitar la rotación en los ejes X e Y
-        Vector3 fixedRotation = transform.eulerAngles;
-        fixedRotation.x = -90f; // Ángulo fijo en X
-        fixedRotation.y = 0f;   // Ángulo fijo en Y
-        transform.eulerAngles = fixedRotation;
-
-        // Rewards
+        // Rewards y otras lógicas (sin cambios)
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
 
         // Reached target
@@ -145,7 +160,7 @@ public class PoliceAgent : Agent
             {
                 Debug.Log("Agent collision with obstacle");
 
-                AddReward(-0.1f); // Penalización por chocar con un obstáculo
+                AddReward(-0.5f); // Penalización por chocar con un obstáculo
                 EndEpisode();
             }
         }
@@ -156,7 +171,7 @@ public class PoliceAgent : Agent
         {
             Debug.Log("Agent out of bounds");
             Debug.Log("Agent position: " + transform.localPosition);
-            SetReward(-0.1f); // Penalize for going out of bounds
+            SetReward(-0.5f); // Penalize for going out of bounds
             EndEpisode();
         }
     }
@@ -167,5 +182,20 @@ public class PoliceAgent : Agent
         var continuousActionsOut = actionsOut.ContinuousActions;
         continuousActionsOut[0] = Input.GetAxis("Horizontal");
         continuousActionsOut[1] = Input.GetAxis("Vertical");
+    }
+
+    void OnDrawGizmos()
+    {
+        // Asegúrate de que solo se dibujen gizmos si el objeto tiene un transform válido
+        if (this.transform != null)
+        {
+            Gizmos.color = Color.blue;
+            // Dibuja una línea que indica hacia dónde está mirando el frente del coche
+            Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2f);
+
+            Gizmos.color = Color.red;
+            // Dibuja una línea que indique la dirección "atrás" del coche
+            Gizmos.DrawLine(transform.position, transform.position - transform.forward * 2f);
+        }
     }
 }
