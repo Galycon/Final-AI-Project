@@ -1,0 +1,38 @@
+{
+    "PoliceCar": {
+        "checkpoints": [
+            {
+                "steps": 499554,
+                "file_path": "results\\learning01\\PoliceCar\\PoliceCar-499554.onnx",
+                "reward": 0.9521739129786906,
+                "creation_time": 1734879648.660515,
+                "auxillary_file_paths": [
+                    "results\\learning01\\PoliceCar\\PoliceCar-499554.pt"
+                ]
+            },
+            {
+                "steps": 501435,
+                "file_path": "results\\learning01\\PoliceCar\\PoliceCar-501435.onnx",
+                "reward": 0.9528571427932807,
+                "creation_time": 1734879648.7174165,
+                "auxillary_file_paths": [
+                    "results\\learning01\\PoliceCar\\PoliceCar-501435.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 501435,
+            "file_path": "results\\learning01\\PoliceCar.onnx",
+            "reward": 0.9528571427932807,
+            "creation_time": 1734879648.7174165,
+            "auxillary_file_paths": [
+                "results\\learning01\\PoliceCar\\PoliceCar-501435.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "2.5.1+cpu"
+    }
+}

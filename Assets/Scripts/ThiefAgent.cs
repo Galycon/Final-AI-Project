@@ -2,39 +2,52 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ThiefAgent : Agent
 {
     Rigidbody rBody;
-    public Transform Police;
-    public GameObject[] Obstacles;
+    public Transform Police; // El policía que persigue al ladrón
+    public GameObject[] ObstacleGroups; // Obstáculos en el entorno
+    private Transform[] Obstacles;
+    private Vector3 initialPosition;
 
     void Start()
     {
         rBody = GetComponent<Rigidbody>();
+
+        // Almacena la posición inicial del agente
+        initialPosition = this.transform.localPosition;
+
+        var obstacleList = new List<Transform>();
+        foreach (var group in ObstacleGroups)
+        {
+            foreach (Transform child in group.transform)
+            {
+                obstacleList.Add(child);
+            }
+        }
+        Obstacles = obstacleList.ToArray();
     }
 
     public override void OnEpisodeBegin()
     {
         // Reset position and velocity if the agent falls
-        if (this.transform.localPosition.y < 0)
+        if (this.transform.localPosition.y < -2)
         {
             rBody.angularVelocity = Vector3.zero;
             rBody.velocity = Vector3.zero;
-            this.transform.localPosition = new Vector3(Random.value * 8 - 4, 0.5f, Random.value * 8 - 4);
+            this.transform.localPosition = initialPosition;
         }
-
-        // Randomize police position
-        Police.localPosition = new Vector3(Random.value * 8 - 4, 0.5f, Random.value * 8 - 4);
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         // Observa la posición del policía
-        sensor.AddObservation(Police.localPosition);
+        sensor.AddObservation(Police.localPosition / 8f);
 
         // Observa la posición del ladrón
-        sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(this.transform.localPosition / 8f);
 
         // Observa la velocidad del ladrón
         sensor.AddObservation(rBody.velocity.x);
@@ -47,35 +60,58 @@ public class ThiefAgent : Agent
         }
     }
 
-    public float forceMultiplier = 10;
+    public float forceMultiplier = 50;
+    public float maxDistance = 10f; // Distancia máxima para huir
+    public float policeTouchDistance = 1f; // Distancia en la que el policía toca al ladrón
+
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        // Mover el ladrón según las acciones recibidas
-        Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = actionBuffers.ContinuousActions[0];
-        controlSignal.z = actionBuffers.ContinuousActions[1];
-        rBody.AddForce(controlSignal * forceMultiplier);
+        // Obtener dirección de huida
+        Vector3 directionToPolice = Police.localPosition - this.transform.localPosition;
+        Vector3 escapeDirection = -directionToPolice.normalized;
+
+        // Aplicar la acción de movimiento
+        Vector3 controlSignal = new Vector3(actionBuffers.ContinuousActions[0], 0, actionBuffers.ContinuousActions[1]);
+        controlSignal = controlSignal.normalized * forceMultiplier; // Normalizamos para mantener la dirección
+
+        rBody.AddForce(escapeDirection * forceMultiplier); // Fuerza para huir del policía
 
         // Calcular la distancia al policía
         float distanceToPolice = Vector3.Distance(this.transform.localPosition, Police.localPosition);
 
-        // Recompensa por mantenerse lejos del policía
-        AddReward(distanceToPolice * 0.01f);
+        // Recompensa por alejarse del policía
+        if (distanceToPolice > maxDistance)
+        {
+            AddReward(0.05f); // Recompensa por moverse lejos
+        }
+
+        // Penalización si se acerca al policía
+        if (distanceToPolice < policeTouchDistance)
+        {
+            SetReward(-1.0f); // Penalización por ser atrapado
+            EndEpisode(); // Reinicia el episodio
+        }
+
+        // Penalización si no se mueve
+        if (controlSignal.magnitude < 0.01f)
+        {
+            AddReward(-0.05f); // Penalización por no moverse
+        }
 
         // Penalización si choca con un obstáculo
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit))
         {
             if (hit.collider.CompareTag("Obstacle"))
             {
-                AddReward(-0.1f);
+                AddReward(-0.1f); // Penalización por chocar con un obstáculo
             }
         }
 
         // Penalización si se cae
         if (this.transform.localPosition.y < 0)
         {
-            SetReward(-1.0f);
-            EndEpisode();
+            SetReward(-1.0f); // Penalización por caerse
+            EndEpisode(); // Reinicia el episodio
         }
     }
 
