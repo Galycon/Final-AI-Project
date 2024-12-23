@@ -247,8 +247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishPrefab: {fileID: 3958411142049960785, guid: 74d26cf07e57cc74d8a906009742a5cb, type: 3}
   leaderPrefab: {fileID: 8487321736781432988, guid: bba5ca65b4368b34c8707bf331c697bc, type: 3}
-  numFish: 2
-  numLeader: 1
+  numFish: 10
+  numLeader: 2
   allFish: []
   allLeader: []
   swimLimits: {x: 5, y: 5, z: 5}
