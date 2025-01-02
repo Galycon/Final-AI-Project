@@ -39,20 +39,41 @@ public class WanderingAgent : MonoBehaviour
 
     void Update()
     {
-        if (isEscaping) return;
-
-        // Si el agente ha llegado al waypoint actual
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        if (agent.velocity == Vector3.zero)
         {
-            // Registrar el último waypoint antes de actualizar
-            lastWaypointIndex = currentWaypointIndex;
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                // Registrar el último waypoint antes de actualizar
+                lastWaypointIndex = currentWaypointIndex;
 
-            // Actualizar el waypoint
-            UpdateWaypoint();
+                // Actualizar el waypoint
+                UpdateWaypoint();
 
-            // Establecer la nueva posición de destino
-            agent.SetDestination(waypoints[currentWaypointIndex].position);
+                // Establecer la nueva posición de destino
+                agent.SetDestination(waypoints[currentWaypointIndex].position);
+            }
         }
+        else
+        {
+            if (isEscaping) return;
+
+
+            // Si el agente ha llegado al waypoint actual
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                // Registrar el último waypoint antes de actualizar
+                lastWaypointIndex = currentWaypointIndex;
+
+                // Actualizar el waypoint
+                UpdateWaypoint();
+
+                // Establecer la nueva posición de destino
+                agent.SetDestination(waypoints[currentWaypointIndex].position);
+            }
+        }
+        
+
+        
     }
 
     // Actualizar el índice del waypoint para avanzar al siguiente
