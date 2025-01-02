@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.32825002
+      value: 0.32825005
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.32825002
+      value: 0.32825005
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalScale.z
@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.3885298
+      value: -0.55535245
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: 16.869179
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.78
+      value: -19.35172
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_LocalRotation.w
@@ -63,6 +63,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
       propertyPath: m_Name
       value: Donut
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7957075cbb45ea84da7adfa4b74f6c49, type: 3}
+      propertyPath: m_TagString
+      value: Target
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

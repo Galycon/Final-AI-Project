@@ -1,124 +1,171 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
+using System;
 using Unity.MLAgents.Actuators;
-using UnityEngine;
-using System.Collections.Generic;
 
 public class ThiefAgent : Agent
 {
-    Rigidbody rBody;
-    public Transform Police; // El policía que persigue al ladrón
-    public GameObject[] ObstacleGroups; // Obstáculos en el entorno
-    private Transform[] Obstacles;
-    private Vector3 initialPosition;
+    [Header("Velocidad")]
+    [Range(0f, 5f)]
+    public float _speed;
 
-    void Start()
+    [Header("Velocidad de giro")]
+    [Range(50f, 300f)]
+    public float _turnSpeed;
+
+    public bool _training = true;
+
+
+    private Rigidbody _rb;
+
+    [SerializeField]
+    private Transform _target;
+    private Animator _anim;
+
+    private Vector3 _previous;
+
+
+    public override void Initialize()
     {
-        rBody = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
+        _anim = GetComponent<Animator>();
+        _previous = transform.position;
 
-        // Almacena la posición inicial del agente
-        initialPosition = this.transform.localPosition;
-
-        var obstacleList = new List<Transform>();
-        foreach (var group in ObstacleGroups)
-        {
-            foreach (Transform child in group.transform)
-            {
-                obstacleList.Add(child);
-            }
-        }
-        Obstacles = obstacleList.ToArray();
+        //MaxStep forma parte de la clase Agent
+        if (!_training) MaxStep = 0;
     }
 
     public override void OnEpisodeBegin()
     {
-        // Reset position and velocity if the agent falls
-        if (this.transform.localPosition.y < -2)
-        {
-            rBody.angularVelocity = Vector3.zero;
-            rBody.velocity = Vector3.zero;
-            this.transform.localPosition = initialPosition;
-        }
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+
+        MoverPosicionInicial();
+        _previous = transform.position;
     }
-
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        // Observa la posición del policía
-        sensor.AddObservation(Police.localPosition / 8f);
-
-        // Observa la posición del ladrón
-        sensor.AddObservation(this.transform.localPosition / 8f);
-
-        // Observa la velocidad del ladrón
-        sensor.AddObservation(rBody.velocity.x);
-        sensor.AddObservation(rBody.velocity.z);
-
-        // Observa las posiciones de los obstáculos
-        foreach (var obstacle in Obstacles)
-        {
-            sensor.AddObservation(obstacle.transform.localPosition);
-        }
-    }
-
-    public float forceMultiplier = 50;
-    public float maxDistance = 10f; // Distancia máxima para huir
-    public float policeTouchDistance = 1f; // Distancia en la que el policía toca al ladrón
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        // Obtener dirección de huida
-        Vector3 directionToPolice = Police.localPosition - this.transform.localPosition;
-        Vector3 escapeDirection = -directionToPolice.normalized;
+        // Acceder a las acciones discretas
+        int lForward = actionBuffers.DiscreteActions[0];  // Acción para avanzar (0 o 1)
+        int lTurn = actionBuffers.DiscreteActions[1];     // Acción para girar (-1, 0, o 1)
 
-        // Aplicar la acción de movimiento
-        Vector3 controlSignal = new Vector3(actionBuffers.ContinuousActions[0], 0, actionBuffers.ContinuousActions[1]);
-        controlSignal = controlSignal.normalized * forceMultiplier; // Normalizamos para mantener la dirección
+        // Convertir la acción para avanzar
+        float forwardMovement = lForward == 1 ? 1f : 0f;  // Si es 1, avanzar; si no, detenerse.
 
-        rBody.AddForce(escapeDirection * forceMultiplier); // Fuerza para huir del policía
-
-        // Calcular la distancia al policía
-        float distanceToPolice = Vector3.Distance(this.transform.localPosition, Police.localPosition);
-
-        // Recompensa por alejarse del policía
-        if (distanceToPolice > maxDistance)
+        // Convertir la acción para girar
+        float turnDirection = 0f;
+        if (lTurn == 1)
         {
-            AddReward(0.05f); // Recompensa por moverse lejos
+            turnDirection = 1f; // Girar a la derecha
+        }
+        else if (lTurn == -1)
+        {
+            turnDirection = -1f; // Girar a la izquierda
         }
 
-        // Penalización si se acerca al policía
-        if (distanceToPolice < policeTouchDistance)
-        {
-            SetReward(-1.0f); // Penalización por ser atrapado
-            EndEpisode(); // Reinicia el episodio
-        }
+        // Mover el agente hacia adelante
+        _rb.MovePosition(transform.position + transform.forward * forwardMovement * _speed * Time.deltaTime);
 
-        // Penalización si no se mueve
-        if (controlSignal.magnitude < 0.01f)
-        {
-            AddReward(-0.05f); // Penalización por no moverse
-        }
+        // Rotar el agente
+        transform.Rotate(transform.up * turnDirection * _turnSpeed * Time.deltaTime);
+    }
 
-        // Penalización si choca con un obstáculo
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit))
-        {
-            if (hit.collider.CompareTag("Obstacle"))
-            {
-                AddReward(-0.1f); // Penalización por chocar con un obstáculo
-            }
-        }
+    public void Update()
+    {
+        float velocity = ((transform.position - _previous).magnitude) / Time.deltaTime;
+        _previous = transform.position;
 
-        // Penalización si se cae
-        if (this.transform.localPosition.y < 0)
-        {
-            SetReward(-1.0f); // Penalización por caerse
-            EndEpisode(); // Reinicia el episodio
-        }
+        _anim.SetFloat("multiplicador", velocity);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        var continuousActionsOut = actionsOut.ContinuousActions;
-        continuousActionsOut[0] = Input.GetAxis("Horizontal");
-        continuousActionsOut[1] = Input.GetAxis("Vertical");
+        // Obtener las acciones de tipo discreto
+        var discreteActions = actionsOut.DiscreteActions;
+
+        // Acción para avanzar (0 = no avanzar, 1 = avanzar)
+        int lForward = 0;
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            lForward = 1;  // Avanzar
+        }
+
+        // Acción para girar (-1 = izquierda, 0 = no girar, 1 = derecha)
+        int lTurn = 0;
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            lTurn = -1;  // Girar a la izquierda
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            lTurn = 1;   // Girar a la derecha
+        }
+
+        // Asignar las acciones al ActionBuffers
+        discreteActions[0] = lForward; // Acción de avance
+        discreteActions[1] = lTurn;    // Acción de giro
+    }
+
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        //Distancia al target.
+        //Float de 1 posicion.
+        sensor.AddObservation(
+        Vector3.Distance(_target.transform.position, transform.position));
+
+        //Dirección al target.
+        //Vector 3 posiciones. 
+        sensor.AddObservation(
+            (_target.transform.position - transform.position).normalized);
+
+        //Vector del señor, donde mira.
+        //Vector de 3 posiciones. 
+        sensor.AddObservation(
+            transform.forward);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (_training)
+        {
+            if (other.CompareTag("target"))
+            {
+                AddReward(0.5f);
+
+            }
+            if (other.CompareTag("borders"))
+            {
+                AddReward(-0.05f);
+            }
+        }
+    }
+
+
+    private void MoverPosicionInicial()
+    {
+        bool posicionEncontrada = false;
+        int intentos = 100;
+        Vector3 posicionPotencial = Vector3.zero;
+
+        while (!posicionEncontrada || intentos >= 0)
+        {
+            intentos--;
+            posicionPotencial = new Vector3(
+                transform.parent.position.x + UnityEngine.Random.Range(-3f, 3f),
+                0.555f,
+                transform.parent.position.z + UnityEngine.Random.Range(-3f, 3f));
+            //en el caso de que tengamos mas cosas en el escenario checker que no choca
+            Collider[] colliders = Physics.OverlapSphere(posicionPotencial, 0.5f);
+            if (colliders.Length == 0)
+            {
+                transform.position = posicionPotencial;
+                posicionEncontrada = true;
+            }
+        }
     }
 }
