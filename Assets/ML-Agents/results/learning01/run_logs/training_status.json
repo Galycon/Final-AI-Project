@@ -1,32 +1,77 @@
 {
-    "PoliceCar": {
+    "Thief": {
         "checkpoints": [
             {
-                "steps": 499554,
-                "file_path": "results\\learning01\\PoliceCar\\PoliceCar-499554.onnx",
-                "reward": 0.9521739129786906,
-                "creation_time": 1734879648.660515,
+                "steps": 499975,
+                "file_path": "results\\learning01\\Thief\\Thief-499975.onnx",
+                "reward": 1.6666666666666667,
+                "creation_time": 1735857363.5227313,
                 "auxillary_file_paths": [
-                    "results\\learning01\\PoliceCar\\PoliceCar-499554.pt"
+                    "results\\learning01\\Thief\\Thief-499975.pt"
                 ]
             },
             {
-                "steps": 501435,
-                "file_path": "results\\learning01\\PoliceCar\\PoliceCar-501435.onnx",
-                "reward": 0.9528571427932807,
-                "creation_time": 1734879648.7174165,
+                "steps": 999958,
+                "file_path": "results\\learning01\\Thief\\Thief-999958.onnx",
+                "reward": 9.889999998733401,
+                "creation_time": 1735857742.9989061,
                 "auxillary_file_paths": [
-                    "results\\learning01\\PoliceCar\\PoliceCar-501435.pt"
+                    "results\\learning01\\Thief\\Thief-999958.pt"
+                ]
+            },
+            {
+                "steps": 1499904,
+                "file_path": "results\\learning01\\Thief\\Thief-1499904.onnx",
+                "reward": 24.65000001185884,
+                "creation_time": 1735858119.429002,
+                "auxillary_file_paths": [
+                    "results\\learning01\\Thief\\Thief-1499904.pt"
+                ]
+            },
+            {
+                "steps": 1999926,
+                "file_path": "results\\learning01\\Thief\\Thief-1999926.onnx",
+                "reward": 31.79000000115484,
+                "creation_time": 1735858497.0214114,
+                "auxillary_file_paths": [
+                    "results\\learning01\\Thief\\Thief-1999926.pt"
+                ]
+            },
+            {
+                "steps": 2499972,
+                "file_path": "results\\learning01\\Thief\\Thief-2499972.onnx",
+                "reward": 37.144999999925496,
+                "creation_time": 1735858880.5442555,
+                "auxillary_file_paths": [
+                    "results\\learning01\\Thief\\Thief-2499972.pt"
+                ]
+            },
+            {
+                "steps": 2999882,
+                "file_path": "results\\learning01\\Thief\\Thief-2999882.onnx",
+                "reward": 35.25,
+                "creation_time": 1735859271.6478918,
+                "auxillary_file_paths": [
+                    "results\\learning01\\Thief\\Thief-2999882.pt"
+                ]
+            },
+            {
+                "steps": 3000010,
+                "file_path": "results\\learning01\\Thief\\Thief-3000010.onnx",
+                "reward": 35.25,
+                "creation_time": 1735859271.6986213,
+                "auxillary_file_paths": [
+                    "results\\learning01\\Thief\\Thief-3000010.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 501435,
-            "file_path": "results\\learning01\\PoliceCar.onnx",
-            "reward": 0.9528571427932807,
-            "creation_time": 1734879648.7174165,
+            "steps": 3000010,
+            "file_path": "results\\learning01\\Thief.onnx",
+            "reward": 35.25,
+            "creation_time": 1735859271.6986213,
             "auxillary_file_paths": [
-                "results\\learning01\\PoliceCar\\PoliceCar-501435.pt"
+                "results\\learning01\\Thief\\Thief-3000010.pt"
             ]
         }
     },

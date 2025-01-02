@@ -1,23 +1,23 @@
 default_settings: null
 behaviors:
-  ThiefCar:
+  Thief:
     trainer_type: ppo
     hyperparameters:
-      batch_size: 128
-      buffer_size: 12800
-      learning_rate: 0.0001
-      beta: 0.005
+      batch_size: 256
+      buffer_size: 40960
+      learning_rate: 0.0003
+      beta: 0.01
       epsilon: 0.2
-      lambd: 0.99
-      num_epoch: 3
+      lambd: 0.95
+      num_epoch: 4
       shared_critic: false
       learning_rate_schedule: linear
       beta_schedule: linear
       epsilon_schedule: linear
     network_settings:
       normalize: true
-      hidden_units: 256
-      num_layers: 3
+      hidden_units: 128
+      num_layers: 2
       vis_encode_type: simple
       memory: null
       goal_conditioning_type: hyper
@@ -35,54 +35,11 @@ behaviors:
           goal_conditioning_type: hyper
           deterministic: false
     init_path: null
-    keep_checkpoints: 5
+    keep_checkpoints: 10
     checkpoint_interval: 500000
-    max_steps: 500000
-    time_horizon: 2048
-    summary_freq: 5000
-    threaded: true
-    self_play: null
-    behavioral_cloning: null
-  PoliceCar:
-    trainer_type: ppo
-    hyperparameters:
-      batch_size: 128
-      buffer_size: 12800
-      learning_rate: 0.0001
-      beta: 0.005
-      epsilon: 0.2
-      lambd: 0.99
-      num_epoch: 3
-      shared_critic: false
-      learning_rate_schedule: linear
-      beta_schedule: linear
-      epsilon_schedule: linear
-    network_settings:
-      normalize: true
-      hidden_units: 256
-      num_layers: 3
-      vis_encode_type: simple
-      memory: null
-      goal_conditioning_type: hyper
-      deterministic: false
-    reward_signals:
-      extrinsic:
-        gamma: 0.99
-        strength: 1.0
-        network_settings:
-          normalize: false
-          hidden_units: 128
-          num_layers: 2
-          vis_encode_type: simple
-          memory: null
-          goal_conditioning_type: hyper
-          deterministic: false
-    init_path: null
-    keep_checkpoints: 5
-    checkpoint_interval: 500000
-    max_steps: 500000
-    time_horizon: 2048
-    summary_freq: 5000
+    max_steps: 3000000
+    time_horizon: 128
+    summary_freq: 10000
     threaded: true
     self_play: null
     behavioral_cloning: null
