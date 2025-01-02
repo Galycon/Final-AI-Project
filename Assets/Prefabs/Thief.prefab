@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 2203203343894638570}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.759, y: 3.011, z: 1.631}
+  m_LocalPosition: {x: 1.26, y: 0.88, z: 0.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46,13 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SensorName: RayPerceptionSensor
   m_DetectableTags:
-  - Obstacles
+  - Untagged
   - Target
-  - Pedestrians
-  m_RaysPerDirection: 3
+  - Obstacle
+  m_RaysPerDirection: 8
   m_MaxRayDegrees: 180
   m_SphereCastRadius: 0.5
-  m_RayLength: 20
+  m_RayLength: 36
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967291
@@ -83,19 +83,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -78.11
+      value: 4.3744736
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.179
+      value: 16.35105
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -94.14
+      value: -19.453747
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -103,7 +103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalRotation.z
@@ -115,7 +115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -127,7 +127,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: d88cac821d982bd45ac748daa3f0bd50, type: 2}
     - target: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_Name
-      value: Characters
+      value: Thief
       objectReference: {fileID: 0}
     - target: {fileID: 5602090977118584096, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -356,9 +356,6 @@ PrefabInstance:
       addedObject: {fileID: 1133778430025978987}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3461106318436517040}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3514142465896228363}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       insertIndex: -1
@@ -369,7 +366,36 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5355986689204015655}
+    - targetCorrespondingSourceObject: {fileID: -8544503541375115353, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6399041448402772017}
   m_SourcePrefab: {fileID: 100100000, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
+--- !u!1 &4744070932330744584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8544503541375115353, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
+  m_PrefabInstance: {fileID: 5241486469751657647}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &6399041448402772017
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744070932330744584}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.01, y: 0.01, z: 0.025}
+  m_Center: {x: 0.0005571741, y: 0.00033109036, z: 0.015216408}
 --- !u!1 &4935076566953454078 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6178bb16cbc37ba48a442f549d5b609c, type: 3}
@@ -396,27 +422,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &3461106318436517040
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4935076566953454078}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 2.89, z: 1}
-  m_Center: {x: 2.76, y: 1.53, z: 1.36}
 --- !u!54 &3514142465896228363
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -463,6 +468,15 @@ MonoBehaviour:
   _speed: 2.75
   _turnSpeed: 241
   _training: 1
+  _thiefSpawnPoint: {fileID: 0}
+  _targetSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _target: {fileID: 0}
 --- !u!114 &1743215950360327384
 MonoBehaviour:
@@ -486,10 +500,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 1
+  m_Model: {fileID: 5022602860645237092, guid: 933158d314a497343bda918643a16250, type: 3}
+  m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: PoliceCar
+  m_BehaviorName: Thief
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
